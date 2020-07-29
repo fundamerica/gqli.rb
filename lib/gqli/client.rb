@@ -40,7 +40,7 @@ module GQLi
       fail "Error: #{http_response.reason}\nBody: #{http_response.body}" if http_response.status >= 300
 
       parsed_response = JSON.parse(http_response.to_s)
-      data = parsed_response['data']
+      data = parsed_response.fetch('data', [])
       errors = parsed_response.fetch('errors', nil)
       errors ||= data.fetch('errors', [])
       data.each { |k,v| errors << v.fetch('errors', nil) if v.is_a?(Hash) }
