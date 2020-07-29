@@ -41,11 +41,26 @@ module GQLi
 
       parsed_response = JSON.parse(http_response.to_s)
       data = parsed_response.fetch('data', [])
-      errors = parsed_response.fetch('errors', nil)
-      errors ||= data.fetch('errors', [])
-      data.each { |k,v| errors << v.fetch('errors', nil) if v.is_a?(Hash) }
+      errors = get_errors(parsed_response)
 
       Response.new(data, query, errors.compact.flatten)
+    end
+
+    # Recursively get any errors contained within the data
+    def get_errors(value)
+      errors = []
+      if value.is_a?(Hash)
+        return value['errors'] if value['errors']
+        value.each do |k,v|
+          errors << get_errors(v)
+        end
+      end
+
+      if value.is_a?(Array)
+        value.each { |el| errors << get_errors(el) }
+      end
+
+      errors.compact.flatten
     end
 
     # Validates a query against the schema
