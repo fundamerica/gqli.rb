@@ -207,7 +207,7 @@ module GQLi
                non_null_type(field_type.type.ofType)
              when 'LIST'
                non_null_type(field_type.type.ofType)
-             when 'OBJECT', 'INTERFACE', 'INPUT_OBJECT'
+             when 'OBJECT', 'INTERFACE', 'INPUT_OBJECT', 'ENUM'
                field_type.type
              when 'SCALAR'
                field_type.type
